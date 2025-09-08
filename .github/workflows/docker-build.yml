@@ -76,7 +76,8 @@ jobs:
             sirajudheenam/hello-go-app:${{ steps.vars.outputs.tag }}
             ```
           labels: documentation
-
+          create-if-no-changes: false
+          push-options: --force-with-lease
 
       # # 🔹 Commit README change back to repo
       # - name: Commit changes
