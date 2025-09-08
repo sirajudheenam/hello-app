@@ -23,7 +23,7 @@ jobs:
         run: |
           echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
           echo "sha=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
-          echo "tag=${echo $GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+          echo echo "tag=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
 
       # Log in to Docker Hub (set secrets in repo settings)
       - name: Log in to Docker Hub
