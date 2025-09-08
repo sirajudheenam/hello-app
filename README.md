@@ -29,7 +29,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      # - main
+      - main
       - 'v*'   # only run when pushing version tags like v1.0.0
 
 jobs:
@@ -95,10 +95,6 @@ ssh-keygen -t ed25519 -C "your_email@example.com"
 
 # on legacy systems use,
 ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
-
-# Some changes to the code
-
-# Version update to the code v1.0.3
 
 ```
 
