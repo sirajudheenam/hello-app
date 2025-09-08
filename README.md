@@ -108,7 +108,7 @@ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 ### Build Status
 
 
-![Docker Build](https://github.com/sirajudheenam/hello-go-app/actions/workflows/docker-build.yml/badge.svg?branch=main)
+![Docker Build](https://github.com/sirajudheenam/hello-app/actions/workflows/docker-build.yml/badge.svg?branch=main)
 ![Docker Image Version](https://img.shields.io/docker/v/sirajudheenam/hello-go-app?sort=semver)
 
 
