@@ -1,27 +1,27 @@
 
-# Hello-App 
+# hello-go-app 
 Simple Go web app that responds with "Hello World" and current time.
 
 
 ```bash
 # Build the container
-docker build -t hello-go .
+docker build -t hello-go-app .
 
 # Run the container
-docker run -p 8080:8080 hello-go
+docker run -p 8080:8080 hello-go-app
 
-# docker run -it --rm hello-go-alpine bash
+# docker run -it --rm hello-go-app-alpine bash
 
 
-docker build -t hello-go:v1.0.0 .
+docker build -t hello-go-app:v1.0.0 .
 
-docker run -p 8080:8080 hello-go:v1.0.0
+docker run -p 8080:8080 hello-go-app:v1.0.0
 
 docker login
 
-docker tag hello-go:v1.0.0 sirajudheenam/hello-go:v1.0.0
+docker tag hello-go-app:v1.0.0 sirajudheenam/hello-go-app:v1.0.0
 
-docker push sirajudheenam/hello-go:v1.0.0
+docker push sirajudheenam/hello-go-app:v1.0.0
 
 # create a file .github/workflows/docker-build.yml
 name: Build and Push Docker Image
@@ -29,12 +29,13 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - main
+      # - main
+      - 'v*'   # only run when pushing version tags like v1.0.0
 
 jobs:
   docker:
     runs-on: ubuntu-latest
-    # Secrets are located under an environment / look with gh secret list -e DOCKER
+    # Secrets are located under an environment gh secret list -e DOCKER
     environment: DOCKER # 🔑 use DOCKER environment
 
     steps:
@@ -47,6 +48,7 @@ jobs:
         run: |
           echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
           echo "sha=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+          echo "tag=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
 
       # Log in to Docker Hub (set secrets in repo settings)
       - name: Log in to Docker Hub
@@ -60,7 +62,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: sirajudheenam/hello-go
+          images: sirajudheenam/hello-go-app
 
       # Build and push the Docker image
       - name: Build and push
@@ -69,8 +71,23 @@ jobs:
           context: .
           push: true
           tags: |
-            sirajudheenam/hello-go:latest
-            sirajudheenam/hello-go:${{ steps.vars.outputs.date }}-${{ steps.vars.outputs.sha }}
+            sirajudheenam/hello-go-app:latest
+            sirajudheenam/hello-go-app:${{ steps.vars.outputs.date }}-${{ steps.vars.outputs.sha }}
+            sirajudheenam/hello-go-app:${{ steps.vars.outputs.tag }}
+
+      # 🔹 Update README with latest tag
+      - name: Update README with latest tag using auto commit
+        run: |
+          # TAG="${{ steps.vars.outputs.date }}-${{ steps.vars.outputs.sha }}"
+          TAG="${{ steps.vars.outputs.tag }}"
+          sed -i "s|sirajudheenam/hello-go-app:.*|sirajudheenam/hello-go-app:${TAG}|" README.md
+
+      # 🔹 Commit README change back to repo
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: update README with latest tag ${{ steps.vars.outputs.tag }}"
+          file_pattern: README.md
 
 
 # Generate SSH Keys on your macOS or compatible Systems
@@ -88,9 +105,9 @@ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 ### Build Status
 
 
-![Docker Build](https://github.com/sirajudheenam/hello-app/actions/workflows/docker-build.yml/badge.svg?branch=main)
-![Docker Image Version](https://img.shields.io/docker/v/sirajudheenam/hello-app?sort=semver)
+![Docker Build](https://github.com/sirajudheenam/hello-go-app/actions/workflows/docker-build.yml/badge.svg?branch=main)
+![Docker Image Version](https://img.shields.io/docker/v/sirajudheenam/hello-go-app?sort=semver)
 
 
-**Latest Docker Image:** `sirajudheenam/hello-app:{{TAG}}`
+**Latest Docker Image:** `sirajudheenam/hello-go-app:{{TAG}}`
 
