@@ -63,6 +63,7 @@ jobs:
         with:
           commit-message: "docs: update README with latest tag ${{ steps.vars.outputs.tag }}"
           branch: update-readme-with-tag
+          base: main   # 👈 required since tags have no branch
           title: "Update README with latest Docker tag"
           body: |
             This PR updates the README with the latest Docker image tag:
