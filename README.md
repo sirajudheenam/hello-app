@@ -1,4 +1,7 @@
 
+# Hello-App 
+Simple Go web app that responds with "Hello World" and current time.
+
 
 ```bash
 # Build the container
@@ -31,13 +34,19 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    # Secrets are located under an environment gh secret list -e DOCKER
+    # Secrets are located under an environment / look with gh secret list -e DOCKER
     environment: DOCKER # 🔑 use DOCKER environment
 
     steps:
       # Checkout the repo
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set image tags
+        id: vars
+        run: |
+          echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+          echo "sha=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
 
       # Log in to Docker Hub (set secrets in repo settings)
       - name: Log in to Docker Hub
@@ -54,14 +63,14 @@ jobs:
           images: sirajudheenam/hello-go
 
       # Build and push the Docker image
-      - name: Build and push Docker image
+      - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: |
-            ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+            sirajudheenam/hello-go:latest
+            sirajudheenam/hello-go:${{ steps.vars.outputs.date }}-${{ steps.vars.outputs.sha }}
 
 
 # Generate SSH Keys on your macOS or compatible Systems
@@ -74,5 +83,14 @@ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 
 # Version update to the code v1.0.3
 
-
 ```
+
+### Build Status
+
+
+![Docker Build](https://github.com/sirajudheenam/hello-app/actions/workflows/docker-build.yml/badge.svg?branch=main)
+![Docker Image Version](https://img.shields.io/docker/v/sirajudheenam/hello-app?sort=semver)
+
+
+**Latest Docker Image:** `sirajudheenam/hello-app:{{TAG}}`
+
