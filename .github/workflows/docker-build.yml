@@ -3,7 +3,8 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - main
+      # - main
+      - 'v*'   # only run when pushing version tags like v1.0.0
 
 jobs:
   docker:
@@ -21,6 +22,7 @@ jobs:
         run: |
           echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
           echo "sha=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+          echo "tag=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
 
       # Log in to Docker Hub (set secrets in repo settings)
       - name: Log in to Docker Hub
@@ -34,7 +36,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: sirajudheenam/hello-app
+          images: sirajudheenam/hello-go-app
 
       # Build and push the Docker image
       - name: Build and push
@@ -43,18 +45,20 @@ jobs:
           context: .
           push: true
           tags: |
-            sirajudheenam/hello-app:latest
-            sirajudheenam/hello-app:${{ steps.vars.outputs.date }}-${{ steps.vars.outputs.sha }}
+            sirajudheenam/hello-go-app:latest
+            sirajudheenam/hello-go-app:${{ steps.vars.outputs.date }}-${{ steps.vars.outputs.sha }}
+            sirajudheenam/hello-go-app:${{ steps.vars.outputs.tag }}
 
       # 🔹 Update README with latest tag
       - name: Update README with latest tag using auto commit
         run: |
-          TAG="${{ steps.vars.outputs.date }}-${{ steps.vars.outputs.sha }}"
-          sed -i "s|sirajudheenam/hello-app:.*|sirajudheenam/hello-app:${TAG}|" README.md
+          # TAG="${{ steps.vars.outputs.date }}-${{ steps.vars.outputs.sha }}"
+          TAG="${{ steps.vars.outputs.tag }}"
+          sed -i "s|sirajudheenam/hello-go-app:.*|sirajudheenam/hello-go-app:${TAG}|" README.md
 
       # 🔹 Commit README change back to repo
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "docs: update README with latest docker image tag"
+          commit_message: "docs: update README with latest tag ${{ steps.vars.outputs.tag }}"
           file_pattern: README.md
