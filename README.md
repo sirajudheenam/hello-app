@@ -31,6 +31,8 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    # Secrets are located under an environment gh secret list -e DOCKER
+    environment: DOCKER # 🔑 use DOCKER environment
 
     steps:
       # Checkout the repo
