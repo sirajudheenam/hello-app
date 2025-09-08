@@ -62,4 +62,12 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
 
+# Generate SSH Keys on your macOS or compatible Systems
+ssh-keygen -t ed25519 -C "your_email@example.com"
+
+# on legacy systems use,
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+
+# Some changes to the code
+
 ```
