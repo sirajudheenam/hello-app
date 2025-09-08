@@ -80,14 +80,21 @@ jobs:
         run: |
           # TAG="${{ steps.vars.outputs.date }}-${{ steps.vars.outputs.sha }}"
           TAG="${{ steps.vars.outputs.tag }}"
-          sed -i "s|sirajudheenam/hello-go-app:.*|sirajudheenam/hello-go-app:${TAG}|" README.md
+          sed -i "s|sirajudheenam/hello-app:.*|sirajudheenam/hello-app:${TAG}|" README.md
 
-      # 🔹 Commit README change back to repo
-      - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+      # 🔹 Create Pull Request with the README change
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
         with:
-          commit_message: "docs: update README with latest tag ${{ steps.vars.outputs.tag }}"
-          file_pattern: README.md
+          commit-message: "docs: update README with latest tag ${{ steps.vars.outputs.tag }}"
+          branch: update-readme-with-tag
+          title: "Update README with latest Docker tag"
+          body: |
+            This PR updates the README with the latest Docker image tag:
+            ```
+            sirajudheenam/hello-go-app:${{ steps.vars.outputs.tag }}
+            ```
+          labels: documentation
 
 
 # Generate SSH Keys on your macOS or compatible Systems
