@@ -76,8 +76,8 @@ jobs:
 
       # 🔹 Commit README change back to repo
       - name: Commit changes
-        base: main
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
+          base: main
           commit_message: "docs: update README with latest tag ${{ steps.vars.outputs.tag }}"
           file_pattern: README.md
