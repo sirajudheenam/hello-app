@@ -29,7 +29,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - main
+      # - main
       - 'v*'   # only run when pushing version tags like v1.0.0
 
 jobs:
@@ -48,7 +48,7 @@ jobs:
         run: |
           echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
           echo "sha=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
-          echo "tag=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+          echo "tag=${echo $GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
 
       # Log in to Docker Hub (set secrets in repo settings)
       - name: Log in to Docker Hub
