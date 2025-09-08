@@ -76,7 +76,7 @@ jobs:
             sirajudheenam/hello-go-app:${{ steps.vars.outputs.tag }}
             ```
           labels: documentation
-          create-if-no-changes: false
+
 
       # # 🔹 Commit README change back to repo
       # - name: Commit changes
@@ -84,3 +84,4 @@ jobs:
       #   with:
       #     commit_message: "docs: update README with latest tag ${{ steps.vars.outputs.tag }}"
       #     file_pattern: README.md
+      #   create-if-no-changes: false
