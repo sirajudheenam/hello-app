@@ -3,7 +3,8 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      # - main
+      - main # run on pushes to main branch
+    tags:
       - 'v*'   # only run when pushing version tags like v1.0.0
 
 jobs:
