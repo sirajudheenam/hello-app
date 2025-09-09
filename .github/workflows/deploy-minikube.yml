@@ -1,0 +1,37 @@
+name: Deploy to Minikube
+
+on:
+  workflow_dispatch:  # run manually from GitHub UI
+  push:
+    branches:
+      - main
+
+jobs:
+  build-deploy:
+    runs-on: self-hosted   # 👈 IMPORTANT: self-hosted runner on your Mac
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.25
+
+      - name: Run tests
+        run: go test ./...
+
+      - name: Build Docker image in Minikube
+        run: |
+          # Point Docker to Minikube’s Docker daemon
+          eval $(minikube docker-env)
+
+          IMAGE=hello-go-app
+          TAG=${GITHUB_SHA::7}
+
+          docker build -t $IMAGE:$TAG -t $IMAGE:latest .
+          echo "Built $IMAGE:$TAG inside Minikube Docker"
+
+      - name: Deploy to Minikube
+        run: |
+          kubectl set image deployment/hello-app hello-app=hello-go-app:${GITHUB_SHA::7}
+          kubectl rollout status deployment/hello-app

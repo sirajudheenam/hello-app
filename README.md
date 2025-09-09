@@ -2,12 +2,7 @@
 # hello-go-app 
 Simple Go web app that responds with "Hello World" and current time.
 
-### Build Status
-
-![Docker Build](https://github.com/sirajudheenam/hello-app/actions/workflows/docker-build.yml/badge.svg?branch=main)
-![Docker Image Version](https://img.shields.io/docker/v/sirajudheenam/hello-go-app?sort=semver)
-
-
+## Follow the instructions
 
 ```bash
 
@@ -138,7 +133,7 @@ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 
 ## Kubernetes Deployment
 
-```
+```bash
 
 kubectl create -f ./k8s
 
@@ -335,10 +330,7 @@ Hello World - SAM - 2025-09-09 02:23:14
 * Connection #0 to host localhost left intact
 
 
-
-
-
-## NodePort ENABLED
+## NodePort - ENABLED
 
 apiVersion: v1
 kind: Service
@@ -598,14 +590,144 @@ curl -v 127.0.0.1:8080
 Hello World - SAM - 2025-09-09 05:33:53
 * Connection #0 to host 127.0.0.1 left intact
 
+## After Pod Name / Host name displayed we can see our requests are served by different Pods
+
+Hello World - SAM - 2025-09-09 05:51:44 - Pod: hello-app-6f668b7b4c-bnczg
+
+Hello World - SAM - 2025-09-09 05:51:52 - Pod: hello-app-6f668b7b4c-qz87n
+
+
+# Edit the version number of the image from deployment
+
+kubectl edit deployment hello-app 
+
+
+
+kubectl set image deployment/hello-app hello-app=sirajudheenam/hello-go-app:v1.0.23
+
+kubectl scale deployment hello-app --replicas=3
+
+deployment.apps/hello-app scaled
 
 
 ```
 
+## Running Self-hosted runner for Github Actions for Minikube set up
+
+Instructions are [here](https://github.com/<git-user-org>/<repo>/settings/actions/runners/new?arch=arm64&os=osx) for macOS Device.
+
+```bash
+# DOWNLOAD
+
+# Create a folder
+mkdir actions-runner && cd actions-runner
+
+# Download the latest runner package
+curl -o actions-runner-osx-arm64-2.328.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.328.0/actions-runner-osx-arm64-2.328.0.tar.gz
+
+# Optional: Validate the hash
+echo "30e8c9e34ae3f1f5004d0fd6eb4e42714d1b489ca9c91f5eed3bcbd29c6f446d  actions-runner-osx-arm64-2.328.0.tar.gz" | shasum -a 256 -c
+
+# Output
+actions-runner-osx-arm64-2.328.0.tar.gz: OK
+
+# Extract the installer
+tar xzf ./actions-runner-osx-arm64-2.328.0.tar.gz
+
+# CONFIGURE
+
+# Create the runner and start the configuration experience
+./config.sh --url https://github.com/sirajudheenam/hello-app --token AA6IE4525MHDKTAM6O6JEPLIX7TJU
+
+# Output
+--------------------------------------------------------------------------------
+|        ____ _ _   _   _       _          _        _   _                      |
+|       / ___(_) |_| | | |_   _| |__      / \   ___| |_(_) ___  _ __  ___      |
+|      | |  _| | __| |_| | | | | '_ \    / _ \ / __| __| |/ _ \| '_ \/ __|     |
+|      | |_| | | |_|  _  | |_| | |_) |  / ___ \ (__| |_| | (_) | | | \__ \     |
+|       \____|_|\__|_| |_|\__,_|_.__/  /_/   \_\___|\__|_|\___/|_| |_|___/     |
+|                                                                              |
+|                       Self-hosted runner registration                        |
+|                                                                              |
+--------------------------------------------------------------------------------
+
+# Authentication
 
 
+√ Connected to GitHub
 
+# Runner Registration
+
+Enter the name of the runner group to add this runner to: [press Enter for Default]
+
+Enter the name of runner: [press Enter for deefe23b-b2a1-4569-a16c-c288c0d58dbb]
+
+This runner will have the following labels: 'self-hosted', 'macOS', 'ARM64'
+Enter any additional labels (ex. label-1,label-2): [press Enter to skip]
+
+√ Runner successfully added
+√ Runner connection is good
+
+# Runner settings
+
+Enter name of work folder: [press Enter for _work]
+
+√ Settings Saved.
+
+
+# Last step, run it!
+./run.sh
+
+# Output
+√ Connected to GitHub
+
+Current runner version: '2.328.0'
+2025-09-09 07:45:31Z: Listening for Jobs
+
+
+# Don't close this Terminal where it is listening
+
+# Using your self-hosted runner
+
+# Use this YAML in your workflow file for each job
+runs-on: self-hosted
+
+```
+
+## Add Test file main_test.go then run it
+
+```bash
+go test -v
+
+# Output
+
+=== RUN   TestHelloHandler
+--- PASS: TestHelloHandler (0.00s)
+=== RUN   TestLoggingMiddleware
+--- PASS: TestLoggingMiddleware (0.00s)
+PASS
+ok  	hello-go-app	0.205s
+
+go test -bench . -benchmem
+
+# Output
+
+goos: darwin
+goarch: arm64
+pkg: hello-go-app
+cpu: Apple M2 Ultra
+BenchmarkHelloHandlerWithLogging-24    	  930718	      1286 ns/op	    1816 B/op	      16 allocs/op
+PASS
+ok  	hello-go-app	2.101s
+
+```
 
 
 ## Updates
 v1.0.23 - Updated logging middleware to display latency, removed PR with update README.md
+
+
+### Build Status
+
+![Docker Build](https://github.com/sirajudheenam/hello-app/actions/workflows/docker-build.yml/badge.svg?branch=main)
+![Docker Image Version](https://img.shields.io/docker/v/sirajudheenam/hello-go-app?sort=semver)

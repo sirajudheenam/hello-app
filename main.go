@@ -93,7 +93,7 @@ func loggingMiddleware(next http.Handler, logger *dualLogger) http.Handler {
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
 	podName := os.Getenv("HOSTNAME") // Kubernetes pod name
-	fmt.Fprintf(w, "Hello World - SAM - %s - Pod: %s\n", currentTime, podName)
+	fmt.Fprintf(w, "Hello Sami - %s - Pod: %s\n", currentTime, podName)
 
 }
 
