@@ -3,7 +3,7 @@
 Simple Go web app that responds with "Hello World" and current time.
 
 ## Updates
-v1.0.13 - Updated logging middleware to display latency, removed PR with update README.md
+v1.0.23 - Updated logging middleware to display latency, removed PR with update README.md
 
 
 ### Build Status
