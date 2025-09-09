@@ -1,20 +1,42 @@
-# Stage 1: Build
-FROM golang:1.22 AS builder
+# 1️⃣ Build stage
+FROM golang:1.25.1 AS builder
 
+# Install git for go get
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
 WORKDIR /app
 
-# Copy source code
+# Copy Go module files and download dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the source code
 COPY . .
 
-# Build the Go binary
-RUN go mod init hello && go build -o server main.go
+# Build the binary
+# RUN go build -o hello-server main.go
+# Build a statically linked binary
+RUN CGO_ENABLED=0 GOOS=linux go build -o hello-server main.go
 
-# Stage 2: Run
-FROM gcr.io/distroless/base-debian12
+# 2️⃣ Final stage: minimal Alpine image
+FROM alpine:3.20
 
+# Set working directory
 WORKDIR /app
-COPY --from=builder /app/server .
 
+# Copy the binary from builder
+COPY --from=builder /app/hello-server .
+
+# Create a logs directory
+RUN mkdir -p /app/logs
+
+# Set environment variable for log file
+ENV LOG_FILE=/app/logs/server.json.log
+
+# Expose port
 EXPOSE 8080
 
-CMD ["./server"]
+# Run the server
+CMD ["./hello-server"]
+# CMD ["sh", "-c", "./hello-server >> $LOG_FILE 2>&1"]
