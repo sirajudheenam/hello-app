@@ -48,7 +48,7 @@ type dualLogger struct {
 func newDualLogger(filename string) *dualLogger {
 	file := &lumberjack.Logger{
 		Filename:   os.Getenv("LOG_FILE"),
-		MaxSize:    20,   // MB
+		MaxSize:    20, // MB
 		MaxBackups: 7,
 		MaxAge:     30,   // days
 		Compress:   true, // compress old logs
@@ -92,7 +92,9 @@ func loggingMiddleware(next http.Handler, logger *dualLogger) http.Handler {
 // Your handler
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
-	fmt.Fprintf(w, "Hello World - SAM - %s\n", currentTime)
+	podName := os.Getenv("HOSTNAME") // Kubernetes pod name
+	fmt.Fprintf(w, "Hello World - SAM - %s - Pod: %s\n", currentTime, podName)
+
 }
 
 func main() {
