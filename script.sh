@@ -33,3 +33,14 @@ echo "--------------------------------------------------------------------------
 # Get log size in bytes
 LOG_SIZE=$(docker exec $CONTAINER_ID stat -c%s /app/logs/server.json.log)
 echo "Log file size: $LOG_SIZE bytes"
+
+echo "--------------------------------------------------------------------------------"
+# Get the latest tag
+LATEST_TAG=$(git tag --sort=-v:refname | head -n 1)
+
+if [ -z "$LATEST_TAG" ]; then
+  echo "No tags found"
+  exit 1
+fi
+
+echo "Latest tag: $LATEST_TAG"
